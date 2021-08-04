@@ -1,0 +1,86 @@
+{
+  "id": "",
+  "name": "",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "1084647",
+      "name": "mine",
+      "font_class": "mine",
+      "unicode": "e63d",
+      "unicode_decimal": 58941
+    },
+    {
+      "icon_id": "1318930",
+      "name": "电影院",
+      "font_class": "dianying",
+      "unicode": "e67d",
+      "unicode_decimal": 59005
+    },
+    {
+      "icon_id": "2721769",
+      "name": "cinema",
+      "font_class": "yingyuan",
+      "unicode": "e61f",
+      "unicode_decimal": 58911
+    },
+    {
+      "icon_id": "10318793",
+      "name": "search",
+      "font_class": "-search1",
+      "unicode": "e503",
+      "unicode_decimal": 58627
+    },
+    {
+      "icon_id": "11749659",
+      "name": "下标",
+      "font_class": "xiabiao",
+      "unicode": "e502",
+      "unicode_decimal": 58626
+    },
+    {
+      "icon_id": "12748883",
+      "name": "热映",
+      "font_class": "reying",
+      "unicode": "e607",
+      "unicode_decimal": 58887
+    },
+    {
+      "icon_id": "12748900",
+      "name": "热映",
+      "font_class": "reying-copy",
+      "unicode": "e608",
+      "unicode_decimal": 58888
+    },
+    {
+      "icon_id": "17057932",
+      "name": "film",
+      "font_class": "film",
+      "unicode": "e65b",
+      "unicode_decimal": 58971
+    },
+    {
+      "icon_id": "18363783",
+      "name": "我 的",
+      "font_class": "wodedangxuan",
+      "unicode": "e504",
+      "unicode_decimal": 58628
+    },
+    {
+      "icon_id": "18874845",
+      "name": "我 的",
+      "font_class": "wode",
+      "unicode": "e501",
+      "unicode_decimal": 58625
+    },
+    {
+      "icon_id": "20359269",
+      "name": "电影",
+      "font_class": "dianying1",
+      "unicode": "e505",
+      "unicode_decimal": 58629
+    }
+  ]
+}

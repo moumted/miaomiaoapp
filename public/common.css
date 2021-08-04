@@ -1,0 +1,8 @@
+*{margin:0;padding:0}
+*{touch-action: pan-y;}
+ul,li{list-style: none;}
+img{display: block;}
+html,body{height: 100%;}
+
+
+#main{height: 100%;;display: flex;flex-direction: column;}
