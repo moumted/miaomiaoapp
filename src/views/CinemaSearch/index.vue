@@ -1,6 +1,7 @@
 <template>
     <div>
         <mt-search
+            ref="cancel"
             v-model="value"
             cancel-text="取消"
             placeholder="搜索"
@@ -29,14 +30,23 @@ export default {
                 'X-Host': 'mall.film-ticket.cinema.list'
             }
         }).then(res=>{
-            // console.log(res.data.data.cinemas)
+            console.log(res.data.data.cinemas)
             this.cinemaname(res.data.data.cinemas)
+        }),
+
+        this.$nextTick(()=>{
+            console.log(this.$refs.cancel.$el.querySelectorAll('mint-aearchbar-cancel'[0]));
+            let cancel = this.$refs.cancel.$el.querySelectorAll('.mint-searchbar-cancel')[0];
+            cancel.onclick=this.back    
         })
     },
     methods:{
         cinemaname(data){
             this.datalist = data.map(item => item.name)
             // console.log(this.list)
+        },
+        back(){
+            this.$router.go(-1);
         }
     },
     computed:{

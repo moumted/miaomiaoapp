@@ -1,4 +1,6 @@
 export default{
-    path:`/detail`,
-    component:() =>import('@/views/Detail'),
+    path:'/detail/:id',
+    component:() =>import('@/views/Detail')
+    
 }
+

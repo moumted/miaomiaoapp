@@ -1,27 +1,30 @@
 <template>
     <div id="movie">
-           <Header title="全民电影"></Header>
-            <div id="content">
-                <div id="movie_menu" ref="mylist" :class="isFixed?'fixed':''" >
-                    <router-link tag="div" to="/movie/city" class="cityName" active-class="myactive">
-                            <span style="font-size:14px">江苏</span>
-                            <i class="iconfont icon-xiabiao"></i>
+        <router-link tag="div" to="/city" class="city">
+            {{cityname}}
+        </router-link>
+        <Header title="全民电影"></Header>
+        <div id="content">
+            <div id="movie_menu" ref="mylist" :class="isFixed?'fixed':''" >
+                <!-- <router-link tag="div" to="/movie/city" class="cityName" active-class="myactive">
+                        <span style="font-size:14px">{{cityname}}</span>
+                        <i class="iconfont icon-xiabiao"></i>
+                </router-link> -->
+                <div class="filmSwitch">
+                    <router-link tag="div" to="/movie/nowplaying" class="nowplay" active-class="myactive">
+                        <span style="font-size:15px">正在热映</span>
                     </router-link>
-                    <div class="filmSwitch">
-                        <router-link tag="div" to="/movie/nowplaying" class="nowplay" active-class="myactive">
-                            <span style="font-size:15px">正在热映</span>
-                        </router-link>
-                        <router-link tag="div" to="/movie/commingsoon" class="commingSoon" active-class="myactive" style="font-size:15px">即将上映</router-link>
-                    </div>
-                    <router-link tag="div" to="/movie/search" class="search" active-class="myactive">
-                        <i class="iconfont icon--search1"></i>
-                    </router-link>
+                    <router-link tag="div" to="/movie/commingsoon" class="commingSoon" active-class="myactive" style="font-size:15px">即将上映</router-link>
+                </div>
+                <router-link tag="div" to="/movie/search" class="search" active-class="myactive">
+                    <i class="iconfont icon--search1"></i>
+                </router-link>
             </div>
-            <keep-alive>
-                <router-view class="filmlist"></router-view>
-            </keep-alive>
+                <keep-alive>
+                    <router-view></router-view>
+                </keep-alive>
         </div>     
-           <Tabbar></Tabbar>
+        <Tabbar></Tabbar>
     </div>
 </template>
 
@@ -38,40 +41,49 @@ export default {
     },
     data(){
         return{
-            isFixed:false
+            isFixed:false,
+            routerlive:true,
+            cityname:"",
         }
+    },
+    mounted(){
+        this.cityname = localStorage.getItem("cityname"),
+        console.log(this.cityname);
+        
+        window.onscroll = this.handleScroll
+    },
+    beforeDestory(){
+        console.log("destory");
+        window.onscroll = null
     },
 
     methods:{
+        
 		handleScroll(){
-			// console.log(document.documentElement.scrollTop,this.$refs.mylist.scrollHeight + 46)
+			// console.log(this.$refs)
 			if(document.documentElement.scrollTop >= this.$refs.mylist.scrollHeight){
 				this.isFixed = true
 			}else{
 
 				this.isFixed = false
 			}
-		},
+		}
 	},
-    mounted(){
-        window.onscroll = this.handleScroll
-    },
-    beforeDestory(){
-        window.onscroll = null
-    }
+
 }
 </script>
 
 <style scoped>
+#movie .city{position: absolute; background-color: rgba(169, 169, 169, 0.5);border-radius: 25px; min-width: 50px;height: 25px; text-align: center;line-height: 25px;padding: 2px;}
 #movie_menu div:hover{cursor: pointer;}
 .myactive{color: red;}
 #movie #content{}
 #content #movie_menu{display: flex;align-items: center;text-align: center;height: 45px;border-bottom: 1px solid rgba(194, 189, 189, 0.925);background-color: white;z-index: 1;}
-#movie_menu .cityName{width: 25%;}
+/* #movie_menu .cityName{width: 25%;} */
 
-#movie_menu .filmSwitch{display: flex;justify-content: space-around;width: 55%;}
+#movie_menu .filmSwitch{display: flex;justify-content: space-around;width: 85%;}
 
-#movie_menu .search{width: 20%;}
+#movie_menu .search{width: 15%;}
 
 .fixed{
     position: fixed;
@@ -82,4 +94,5 @@ export default {
     background-color: white
     ;
 }
+
 </style>
