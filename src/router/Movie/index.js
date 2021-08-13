@@ -6,10 +6,10 @@ export default{
             path:'nowplaying',
             component:()=>import('@/components/NowPlaying')
         },
-        {
-            path : 'city',
-            component:()=>import('@/components/City')
-        },
+        // {
+        //     path : 'city',
+        //     component:()=>import('@/components/City')
+        // },
         
         {
             path:'commingSoon',
@@ -19,6 +19,7 @@ export default{
             path:'search',
             component:()=>import('@/components/Search')
         },
+
         {
             path : '/*',
             redirect : '/movie/nowplaying'
