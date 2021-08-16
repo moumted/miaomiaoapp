@@ -1,43 +1,44 @@
 <template>
     <div ref="myactor" class="film_list">
-        <ul 
-            v-infinite-scroll="loadMore"
-            infinite-scroll-disabled="loading"
-            infinite-scroll-distance="10"
-            infinite-scroll-immediate-check="false"
-            >
-            <div v-for="data in datalist" :key="data.filmId">
-                <li @click="clickChange(data.filmId)">
-                    <div class="film_content">
-                        <img :src="data.poster" alt="data.name">
-                    </div>
-                    <div class="cinema_detail">
-                        <div class="cinema_maindetail">
-                            <div style="font-size:0px;">
-                                <span style="font-size:14px;font-weight:bold">{{data.name}}</span>
-                                <span style="display:inline-block;height:14px;font-size:13px;line-height:14px;color:white;background-color:grey;margin-left:10px">{{data.item.name}}</span>
-                            </div>
-                            <div class="film_detail">
-                                <p v-if="data.grade">观众评分：<span style="color:orange">{{data.grade}}</span></p>
-                                <p v-if="data.actors" style="width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">演员：{{data.actors| actorsfilter}}</p>
-                                <p>{{data.nation}}</p>
-                            </div>                       
+        <Loading v-if="isLoading" />
+            <ul v-else
+                v-infinite-scroll="loadMore"
+                infinite-scroll-disabled="loading"
+                infinite-scroll-distance="20"
+                infinite-scroll-immediate-check="false"
+                >
+                <div v-for="data in datalist" :key="data.filmId" ref="myactor">
+                    <li @click="clickChange(data.filmId)">
+                        <div class="film_content">
+                            <img :src="data.poster" alt="data.name">
                         </div>
-                    </div> 
-                </li>
-            </div>
-            <!-- <div v-if="isShow">正在加载中.....</div> -->
-        </ul>
+                        <div class="cinema_detail">
+                            <div class="cinema_maindetail">
+                                <div style="font-size:0px;">
+                                    <span style="font-size:14px;font-weight:bold">{{data.name}}</span>
+                                    <span style="display:inline-block;height:14px;font-size:13px;line-height:14px;color:white;background-color:grey;margin-left:10px">{{data.item.name}}</span>
+                                </div>
+                                <div class="film_detail">
+                                    <p v-if="data.grade">观众评分：<span style="color:orange">{{data.grade}}</span></p>
+                                    <p v-if="data.actors" style="width:80%;white-space:nowrap;
+                                    word-wrap: break-all;overflow:hidden;text-overflow:ellipsis">演员：{{data.actors| actorsfilter}}</p>
+                                    <p>{{data.nation}}</p>
+                                </div>                       
+                            </div>
+                        </div> 
+                    </li>
+                </div>
+                <div v-if="isShow" class="end">——————已经到底了——————</div>
+            </ul>
     </div>
 </template>
 
 <script>
 import axios from 'axios'
 import Vue from 'vue'
-
 Vue.filter("actorsfilter",function(data){
     var actorlist = data.map(item =>item.name)
-    console.log(data);
+    // console.log(data);
     return actorlist.join(" ")
 })
 export default {
@@ -48,16 +49,17 @@ export default {
             cityId:" " ,
             id : "1",
             total:"",
-            isShow:true
+            isShow:false,
+            isLoading:true
         }
     },
     mounted(){
         this.cityId = localStorage.getItem("cityid")
-        console.log(localStorage,this.cityId);
+        // console.log(localStorage,this.cityId);
 
         // console.log("33333",this.$store.state,this.$store);
         // console.log("111",this.$refs.myactor)
-        this.$refs.myactor.style.width = document.documentElement.scrollWidth - 50 +'px';
+        // this.$refs.myactor.style.width = document.documentElement.scrollWidth - 50 +'px';
         // this.$refs.myactor.style.height = document.documentElement.scrollHeight -45 + 'px'
         // this.$refs.myac.$el.clientHeight = document.documentElement.scrollHeight - 45 +'px',
         axios({
@@ -67,24 +69,21 @@ export default {
                 'X-Host': 'mall.film-ticket.film.list'
             }
         }).then(res=>{
-            console.log(res.data.data)
+            // console.log(res.data.data)
             this.datalist = res.data.data.films
             this.total = res.data.data.total
+            this.isLoading = false
         })
     },
     methods:{
         clickChange(id){
-            console.log(id)
+            // console.log(id)
             this.$router.push(`/detail/${id}`)
         },
         loadMore() {
-            console.log("ending");
+            // console.log("ending");
             this.loading = true;
             this.id ++;
-            // if(this.datalist.length === this.total){
-            //     this.isShow = false
-            //     return
-            // }
             axios({
                 url:`https://m.maizuo.com/gateway?cityId=${this.cityId}&pageNum=${this.id}&pageSize=10&type=1&k=5450470`,
                 headers:{
@@ -94,12 +93,16 @@ export default {
             }).then(res=>{
                 // console.log(res.data.data.films)
                 this.datalist = [...this.datalist,...res.data.data.films]
-                this.loading = false
-            })
+                this.loading = false 
+            });
+            if(this.datalist.length === this.total){
+                this.isShow = true
+                return
+            }
         }
     }
 }
-</script>3
+</script>
 
 
 <style lang="scss" scoped>
@@ -121,12 +124,12 @@ export default {
             }
             .cinema_detail{
                 position: relative;
-                width: 100%;
+                width: 70%;
                 display: flex;
                 align-items: center;
                 justify-content: space-between;
                 .cinema_maindetail{
-                    width: 70%;
+                    width: 100%;
                     color: grey;
                     font-size: 13px;}
             }
@@ -143,6 +146,7 @@ export default {
                     right: 10px;
                     margin-right: 10px;}
         }
+        .end{text-align:center;color: rgb(211, 208, 208);}
     }
 
 }

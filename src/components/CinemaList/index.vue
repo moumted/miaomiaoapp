@@ -1,6 +1,7 @@
 <template>
     <div>
-        <ul >
+        <Loading v-if="isLoading"/>
+        <ul v-else>
             <li v-for="data in arealist">
                 <div class="cinema_detail">
                     <p>{{data.name}}</p>
@@ -24,14 +25,15 @@ export default {
     name:'CinemaList',
     data(){
         return{
-            datalist:[],
+            list:[],
             arealist:[],
             cityid:"",
-            price:[]
+            price:[],
+            isLoading:true
         }
     },
     mounted(){
-        console.log(localStorage.getItem("cityid"));
+        // console.log(localStorage.getItem("cityid"));
         this.cityid = localStorage.getItem("cityid")
         axios({
             url:`https://m.maizuo.com/gateway?cityId=${this.cityid}&ticketFlag=1&k=9335601`,
@@ -40,7 +42,7 @@ export default {
                 'X-Host': 'mall.film-ticket.cinema.list'
             }
         }).then(res=>{
-            // this.datalist = res.data.data.cinemas
+            // this.list = res.data.data.cinemas
             // console.log(res.data.data.cinemas)
             this.areaFilter(res.data.data.cinemas)
         })
@@ -50,9 +52,11 @@ export default {
             var area = localStorage.getItem("area")
             if(localStorage.getItem("area") === "全城"){
                 this.arealist = data
+                this.isLoading = false
             }else{
                 var arr = data.filter(item=>new RegExp(area,"ig").test(item.districtName))
                 this.arealist = arr
+                this.isLoading = false
             }
         }
     }
@@ -63,7 +67,6 @@ export default {
 div{
     overflow: hidden;
     ul{
-        
         margin-bottom:50px;
         li{ 
             overflow: hidden;

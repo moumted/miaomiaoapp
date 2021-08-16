@@ -28,10 +28,11 @@
     </div>
 </template>
 
+
+
 <script>
 import Header from '@/components/Header';
 import Tabbar from '@/components/Tabbar';
-
 
 export default {
     name : 'Movie',
@@ -47,13 +48,15 @@ export default {
         }
     },
     mounted(){
+        // console.log("bbbbbbb");
+        console.log(this.$refs.mylist.style);
         this.cityname = localStorage.getItem("cityname"),
-        console.log(this.cityname);
+        // console.log(this.cityname);
         
         window.onscroll = this.handleScroll
     },
-    beforeDestory(){
-        console.log("destory");
+    beforeDestroy(){
+        console.log("bbbbbb");
         window.onscroll = null
     },
 

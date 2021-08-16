@@ -11,6 +11,11 @@
                 <div @click="listShow()" class="search_cancel">取消</div>
             </div>         
         </div>
+        <div class="posi_city">
+            <p>当前城市：</p>
+            <div class="nowcity" v-if="handle(locationMsg)" @click="handlecityname(handle(locationMsg))"><div>{{handle(locationMsg)}}</div></div>
+            <div class="witting" v-else="handle(locationMsg)"><div>正在定位....</div> </div> 
+        </div>
         <ul class="search_result">
             <li v-for="data in cityFilter" :key="data.cityId" @click="handlecitynum(data.cityId,data.name)">
                 {{data.name}}
@@ -23,6 +28,7 @@
                 </div>
             </mt-index-section>
         </mt-index-list>
+        <div class="result_none" v-if="isShow">无搜索内容显示</div>
     </div>
 </template>
 
@@ -30,6 +36,7 @@
 <script>
 import Vue from 'vue'
 import axios from 'axios'
+import Scroller from '../Scroll'
 export default {
     name:'City',
     data(){
@@ -38,10 +45,13 @@ export default {
             citylist:[],
             list:[],
             info:"",
+            isShow:"",
+            locationMsg:""
         }
     },
     mounted(){
-        // console.log(document.querySelectorAll('ul'));
+         this.getCity();
+        console.log(document.querySelectorAll('ul'));
         // this.$refs.mylist.$el.style.heigth = document.documentElement.scrollHeight - 300 + 'px',
         
         axios({
@@ -55,14 +65,20 @@ export default {
             this.list = res.data.data.cities
             this.handleCity(res.data.data.cities)
 
-        })
+        }),
+        console.log("ddddddddd",this.locationMsg);
         
     },
     watch:{
         info(data){
-            this.$refs.mylist.$el.style.display = 'none'
-            document.querySelectorAll('div')[5].style.display = 'block'
-           document.querySelectorAll('ul')[0].style.display = 'block'
+            if(data){
+                this.$refs.mylist.$el.style.display = 'none'
+                document.querySelectorAll('div')[5].style.display = 'block'
+               document.querySelectorAll('ul')[0].style.display = 'block'
+            }else{
+                document.querySelectorAll('ul')[0].style.display = 'none'
+                this.$refs.mylist.$el.style.display = 'block'
+            }
         },
     },
     methods:{
@@ -90,6 +106,8 @@ export default {
             
         },
         handlecitynum(cityid,cityname){
+            console.log(cityid,cityname);
+            this.$store.commit("CITY_STATE",{cityid,cityname})
             // console.log("111",cityid)
             // this.$store.commit("cityid",cityid)
             localStorage.setItem("cityid",cityid)
@@ -109,6 +127,47 @@ export default {
                 //     style.display = "none"
             // }
         },
+        getCity() {
+            const getLocation = new BMap.Geolocation();
+            var _this = this;
+            getLocation.getCurrentPosition((position) => {
+                // position中存放所有的定位数据
+                console.log(position);
+                // 这里获取的是城市和省
+                let city = position.address.city;
+                let province = position.address.province;
+                _this.locationMsg =  city;
+            }, () => {
+                _this.locationMsg = '定位失败!';
+            }, {provider: 'baidu'});
+        },
+        handle(data){
+            var isTrue = ""
+            if(data.search("市") === -1){
+                isTrue = 'false'
+            }else{
+                isTrue = 'ture'
+            }
+            // console.log("7777",isTrue,data.search("市"))
+            // console.log(data.slice(0,data.search("市")))
+            var newdata = ''
+            if(isTrue === false){
+                newdata = data
+            }else{
+                newdata = data.slice(0,data.search("市"))
+            }
+            return newdata
+            // console.log("7777",newdata);
+            // var newlist = this.list.map(item=>item.name)
+            // console.log("123123123",newlist);
+            // var newarr = newlist.filter(item=>new RegExp(newdata).test(item))
+            // console.log(newarr);
+            // return newarr
+        },
+
+        handlecityname(data){
+            console.log(data);
+        }
     },
 
     computed:{
@@ -116,8 +175,14 @@ export default {
             console.log("6666666",this.list);
             var arr = this.list.filter(item=>new RegExp(this.info,"ig").test(item.name))
             // console.log(arr);
-            return arr
-        }
+            if(arr){
+                return arr
+                this.isShow = false
+            }else{
+                this.isShow = true
+            }
+            console.log(arr);
+        },
     },
 }
 </script>
@@ -143,6 +208,21 @@ export default {
                 }
             .iconfont{font-size: 13px;position:absolute;top:5px;left:6px;}
         };  
+    };
+    .posi_city{margin-left:10px;margin-top:5px;
+        p{color: lightgrey}
+        div{display:flex;height:45px;
+            align-items: center;
+            div{
+                width: 30%;background-color: rgb(231, 231, 231);height: fit-content;justify-content: center
+            }
+        };
+        .witting{display:flex;height:45px;
+            align-items: center;
+            div{
+                width: 30%;background-color: rgb(241, 240, 240);height: fit-content;justify-content: center
+            }
+        }
     };
     .search_result{
         display: none;

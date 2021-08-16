@@ -3,8 +3,9 @@
         <div class="cinema_header" @touchmove.prevent @mousewheel.prevent>
             <div class="cinema_title">
                 <div class="cinema_city">
-                    <router-link tag="span" to="/city">{{cityname}}</router-link>
+                    <router-link tag="span" to="/city">{{cityname}}
                     <i class="iconfont icon-xiabiao"></i>
+                    </router-link>
                 </div>
                 <span class="cinema_name">影院</span>
                 <router-link tag="div" to="/cinema/search" class="cinema_search">
@@ -13,7 +14,7 @@
             </div>
             <div class="cinema_menu">
                 <div class="cinema_area" @click="handlecity()">
-                        <span class="active" >全城</span>
+                        <span class="active">{{city}}</span>
                         <i class="iconfont icon-xiabiao"></i>
                 </div>
                 <div class="cinema_brand">
@@ -27,15 +28,29 @@
             </div>
         </div>
         <div class="area_search" ref="myarea">
-            <ul>
-                <li class="area_detail" v-for="data in datalist" v-if="!isShow" @touchmove.prevent @mousewheel.prevent @click="citydetail(data)" :key="data">
+            <ul v-if="!isShow">
+                <li class="area_detail" v-for="data in datalist"  @touchmove.prevent @mousewheel.prevent @click="citydetail(data)" :key="data">
                     <div>
                         {{data}}
                     </div>
                 </li>
             </ul>
         </div>
-        <CinemaList></CinemaList>
+        <div class="cinema_list">
+            <Loading v-if="isLoading"/>
+            <ul v-else>
+                <li v-for="data in areaFilter" 
+                @click="handlecinema(data.name)" 
+                :key="data.cinemaId">
+                    <div class="cinema_detail">
+                        <p>{{data.name}}</p>
+                        <span>{{data.address}}</span>
+                    </div>
+                    <div class="price">{{data.lowPrice|pricefilter}}元起</div>
+                </li>
+                <div class="ending">已加载全部影城</div>
+            </ul>
+        </div>
         <Tabbar></Tabbar>
     </div>
 </template>
@@ -45,27 +60,44 @@ import axios from 'axios'
 import Header from '@/components/Header'
 import Tabbar from '@/components/Tabbar'
 import CinemaList from '@/components/CinemaList'
+import Loading from '@/components/Loading'
+import Vue from 'vue'
+
+Vue.filter("pricefilter",function(data){
+    return Math.floor(data*0.01)
+}) 
 export default {
     name : 'Cinema',
     components:{
         Header,
         Tabbar,
-        CinemaList
+        CinemaList,
+        Loading
     },
     data(){
         return{
             cityname:"",
             datalist:["全城"],
             isShow:true,
-            isColor:true
+            isColor:true,
+            isLoading:true,
+            city:"全城",
+            list:[],
+            arealist:[],
+            cityid:"",
+            price:[],
         }
     },
     mounted(){
-        console.log("123456",document.querySelectorAll('div')[1]
+        var area = window.localStorage.getItem("cityarea")
+        if(area){
+            this.arealist = JSON.parse(area)
+        }
+        console.log("123456",document.querySelectorAll('ul')
         )
         this.cityname = localStorage.getItem("cityname")
 
-        console.log(localStorage.getItem("cityid"));
+        // console.log(localStorage.getItem("cityid"));
         this.cityid = localStorage.getItem("cityid")
         axios({
             url:`https://m.maizuo.com/gateway?cityId=${this.cityid}&ticketFlag=1&k=9335601`,
@@ -76,7 +108,16 @@ export default {
         }).then(res=>{
             // console.log(res.data.data.cinemas)
             this.handleDistrict(res.data.data.cinemas)
-        })
+            // this.arealist = res.data.data.cinemas
+            if(this.arealist = res.data.data.cinemas){
+                this.isLoading = false
+            }
+            window.localStorage.setItem("cityarea",JSON.stringify(this.arealist))
+        }),
+        // console.log(localStorage.getItem("cityid"));
+        this.cityid = localStorage.getItem("cityid")
+
+        
     },
     methods:{
          handleDistrict(data){
@@ -88,7 +129,7 @@ export default {
                 }
             }
             this.datalist = [...this.datalist,...newlist]
-            console.log("aaaaa",newlist);
+            console.log("aaaaa",this.datalist);
         },
         handlecity(){
             this.isShow = !this.isShow  
@@ -102,34 +143,40 @@ export default {
             top - this.$refs.myarea.offsetTop
         },
         citydetail(data){
-            console.log("123123",data);
-            localStorage.setItem("area",data)
-        }
-
+            // console.log("123123",data);
+            this.city = data
+            this.isColor = !this.isColor
+            this.isShow = !this.isShow  
+            if(this.isColor){
+                return document.querySelectorAll('div')[7].style.color = "black"
+            }else{
+                return document.querySelectorAll('div')[7].style.color = "red"
+            }
+            document.querySelectorAll('ul')[0].style.display = "none"
+            
+        },
+        // handlecinema(name){
+        //     console.log("cinema",name);
+        //     this.$store.commit("CINEMA_STATE",name)
+        // }
     },
-    // computed:{
-    //     handlecity(){
-    //         return document.querySelectorAll('div')[10].style.display = "block"
-    //         return document.querySelectorAll('div')[7].style.color = "red"
-            
-    //     }
-    // }
-    // computed:{
-    //    handle(){
-    //         var newlist = [];
-    //         for(var i =0;i<this.datalist.length;i++){
-    //             newlist = this.datalist
-    //         };
-            
-
-
-    //    }    
-    // }
-    
+    computed:{
+        areaFilter(){
+            console.log("cccc",this.arealist);
+            var newlist = []
+            if(this.city === "全城"){
+                newlist = this.arealist
+            }else{
+                var arr = this.arealist.filter(item=>new RegExp(this.city,"ig").test(item.districtName))
+                newlist = arr
+            }
+            return newlist
+        }
+    }
 }
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
     .main_cinema{}
     .cinema_header{width: 100%;height: 107px;}
     .cinema_title{display: flex;padding:0 30px 0 20px;align-items: center;text-align: center;}
@@ -146,4 +193,12 @@ export default {
     .area_search ul .area_detail{height:39px;width: 24.9%;text-align: start;}
     .area_search{position: fixed;top: 107px;}
     .area_search .area_detail div{border: 1px solid rgb(243, 239, 239);width: 90%;text-align: center;font-size: 13px;}
+    .cinema_list{overflow: hidden;}
+    .cinema_list ul{margin-bottom:46px}
+    .cinema_list ul li{overflow: hidden;padding:10px;border-bottom: 1px solid rgba(252, 248, 248, 0.966);}
+    .cinema_list ul li .cinema_detail{white-space: nowrap;width: 70%;float: left;text-overflow: ellipsis;width: 70%;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;}
+    .cinema_list ul li .cinema_detail p{font-size: 15px;white-space: ;}   
+    .cinema_list ul li .cinema_detail span{font-size: 10px;color: grey;}         
+    .cinema_list ul li .price{width: 70px;float: right;color: red}
+    .cinema_list .ending{color: lightgrey;text-align: center;} 
 </style>
