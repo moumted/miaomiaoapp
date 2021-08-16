@@ -4,8 +4,11 @@ import router from './router'
 import store from './store'
 import MintUI from 'mint-ui'
 import 'mint-ui/lib/style.css'
+import Scroller from '@/components/Scroll'
+import Loading from '@/components/Loading'
 
-
+Vue.component('Loading',Loading)
+Vue.component('Scroller',Scroller) 
 Vue.use(MintUI)
 Vue.config.productionTip = false
 

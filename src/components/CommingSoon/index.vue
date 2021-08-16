@@ -1,6 +1,10 @@
 <template>
     <div ref="myactor" class="filmlist">
-        <ul>
+        <ul
+            v-infinite-scroll="loadMore"
+            infinite-scroll-disabled="loading"
+            infinite-scroll-distance="10"
+            >
             <div v-for="data in datalist" @click="handleChange(data.filmId)" :key="data.filmId">
                 <li>
                     <div class="film_content">
@@ -9,7 +13,7 @@
                     <div class="cinema_detail" >
                         <div class="cinema_maindetail">
                             <div style="font-size:0px;">
-                                <span style="font-size:14px;font-weight:bold">{{data.name}}</span>
+                                <span style="font-size:14px;font-weight:bold">{{data.name}}</span>.
                                 <span style="display:inline-block;height:14px;font-size:14px;line-height:14px;color:white;background-color:grey;margin-left:10px">{{data.item.name}}</span>
                             </div>
                             <div class="film_detail">
@@ -21,6 +25,7 @@
                     </div> 
                 </li>
             </div>
+            <div class="ending" v-if="isTrue">-----到底了-----</div>
         </ul>
     </div>
 </template>
@@ -36,27 +41,51 @@ export default {
     name:'NowPlaying',
     data(){
         return{
-            datalist:[]
+            datalist:[],
+            cityId:"",
+            id:'1',
+            total:'',
+            isTrue:false
         }
     },
     mounted(){
         // console.log("111",this.$refs)
-        this.$refs.myactor.style.width = document.documentElement.scrollWidth - 60 +'px'
+        this.cityId = localStorage.getItem("cityid")
+        // this.$refs.myactor.style.width = document.documentElement.scrollWidth - 60 +'px'
         axios({
-            url:'https://m.maizuo.com/gateway?cityId=310100&pageNum=1&pageSize=10&type=2&k=2235856',
+            url:`https://m.maizuo.com/gateway?cityId=${this.cityId}&pageNum=1&pageSize=10&type=2&k=2235856`,
             headers:{
                 'X-Client-Info': '{"a":"3000","ch":"1002","v":"5.0.4","e":"16253246714063236630511617","bc":"310100"}',
                 'X-Host': 'mall.film-ticket.film.list'
             }
         }).then(res=>{
-            console.log(res.data.data.films)
+            // console.log(res.data.data.films)
             this.datalist = res.data.data.films
+            this.total = res.data.data.total
         })
     },
     methods:{
         handleChange(id){
-            console.log(id,this.$route)
+            // console.log(id,this.$route)
             this.$router.push(`/detail/${id}`)
+        },
+        loadMore() {
+            this.loading = true;
+            this.id ++;
+            axios({
+                url:`https://m.maizuo.com/gateway?cityId=${this.cityId}&pageNum=${this.id}&pageSize=10&type=2&k=2235856`,
+                headers:{
+                    'X-Client-Info': '{"a":"3000","ch":"1002","v":"5.0.4","e":"16253246714063236630511617","bc":"310100"}',
+                    'X-Host': 'mall.film-ticket.film.list'
+                }
+            }).then(res=>{
+                this.datalist = [...this.datalist,...res.data.data.films]
+                this.loading = false
+            })
+            if(this.datalist.length === this.total){
+                this.isTrue = true
+                return
+            }
         }
     }
 }
@@ -81,7 +110,7 @@ export default {
             }
             .cinema_detail{
                 position: relative;
-                width: 100%;
+                width: 81%;
                 display: flex;
                 align-items: center;
                 justify-content: space-between;
@@ -102,7 +131,8 @@ export default {
                     position: absolute;
                     right: 10px;
                     margin-right: 10px;}
-        }
+        };
+        .ending{text-align: center;}
         }
 }
 </style>
