@@ -156,17 +156,31 @@ export default {
             }else{
                 newdata = data.slice(0,data.search("市"))
             }
-            return newdata
             // console.log("7777",newdata);
-            // var newlist = this.list.map(item=>item.name)
-            // console.log("123123123",newlist);
-            // var newarr = newlist.filter(item=>new RegExp(newdata).test(item))
+            var newlist = this.list.map(item=>item.name)
+            console.log("123123123",newlist);
+            var newarr = newlist.filter(item=>new RegExp(newdata).test(item))
+            console.log("xxxxx",newarr);
+            setInterval(() => {
+                
+            }, 3000);
+            if(newarr){
+                return newdata
+            }else{
+                return "定位失败"
+            }
             // console.log(newarr);
             // return newarr
         },
 
         handlecityname(data){
-            console.log(data);
+            console.log("777777",this.list);
+            var newlist = this.list.filter(item=>new RegExp(data,'ig').test(item.name))
+
+            console.log(newlist[0].cityId);
+            localStorage.setItem("cityid",newlist[0].cityId)
+            localStorage.setItem("cityname",newlist[0].name)
+            this.$router.push('/movie/nowplaying')
         }
     },
 

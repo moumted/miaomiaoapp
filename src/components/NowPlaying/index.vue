@@ -1,5 +1,6 @@
 <template>
     <div ref="myactor" class="film_list">
+        <transition name="film_list">
         <Loading v-if="isLoading" />
             <ul v-else
                 v-infinite-scroll="loadMore"
@@ -30,6 +31,7 @@
                 </div>
                 <div v-if="isShow" class="end">——————已经到底了——————</div>
             </ul>
+        </transition>
     </div>
 </template>
 
@@ -106,6 +108,22 @@ export default {
 
 
 <style lang="scss" scoped>
+// .film_list-enter-active{
+//     animation: move 2s;
+// };
+// .film_list-leave-active{
+//     animation: move 2s reverse;
+// };
+// @keyframes move{
+//     0%{
+//         transform: translateY(200px);
+//         opacity: 0;
+//     }
+//     100%{
+//         transform: translateY(20px);
+//         opacity: 1;
+//     }
+// }
 .film_list{
    overflow: hidden;
     ul{
