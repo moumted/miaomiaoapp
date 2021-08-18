@@ -1,57 +1,59 @@
 <template>
-    <div class="main_cinema">
-        <div class="cinema_header" @touchmove.prevent @mousewheel.prevent>
-            <div class="cinema_title">
-                <div class="cinema_city">
-                    <router-link tag="span" to="/city">{{cityname}}
-                    <i class="iconfont icon-xiabiao"></i>
+    <div class="main_cinema" @click="mobile">
+        <div class="curtain">
+            <div class="cinema_header" @touchmove.prevent @mousewheel.prevent>
+                <div class="cinema_title">
+                    <div class="cinema_city">
+                        <router-link tag="span" to="/city">{{cityname}}
+                        <i class="iconfont icon-xiabiao"></i>
+                        </router-link>
+                    </div>
+                    <span class="cinema_name">影院</span>
+                    <router-link tag="div" to="/cinema/search" class="cinema_search">
+                        <i class="iconfont icon--search1"></i>
                     </router-link>
                 </div>
-                <span class="cinema_name">影院</span>
-                <router-link tag="div" to="/cinema/search" class="cinema_search">
-                    <i class="iconfont icon--search1"></i>
-                </router-link>
-            </div>
-            <div class="cinema_menu">
-                <div class="cinema_area" @click="handlecity()">
-                        <span class="active">{{city}}</span>
+                <div class="cinema_menu">
+                    <div class="cinema_area" @click="handlecity()">
+                            <span class="active">{{city}}</span>
+                            <i class="iconfont icon-xiabiao"></i>
+                    </div>
+                    <div class="cinema_brand">
+                        <span>品牌</span>
                         <i class="iconfont icon-xiabiao"></i>
-                </div>
-                <div class="cinema_brand">
-                    <span>品牌</span>
-                    <i class="iconfont icon-xiabiao"></i>
-                </div>
-                <div class="cinema_feature">
-                    <span>特色</span>
-                    <i class="iconfont icon-xiabiao"></i>
+                    </div>
+                    <div class="cinema_feature">
+                        <span>特色</span>
+                        <i class="iconfont icon-xiabiao"></i>
+                    </div>
                 </div>
             </div>
+            <div class="area_search" ref="myarea">
+                <ul v-if="!isShow">
+                    <li class="area_detail" v-for="data in datalist"  @click="citydetail(data)" :key="data">
+                        <div>
+                            {{data}}
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="cinema_list">
+                <Loading v-if="isLoading"/>
+                <ul v-else>
+                    <li v-for="data in areaFilter" 
+                    @click="handlecinema(data.name)" 
+                    :key="data.cinemaId">
+                        <div class="cinema_detail">
+                            <p>{{data.name}}</p>
+                            <span>{{data.address}}</span>
+                        </div>
+                        <div class="price">{{data.lowPrice|pricefilter}}元起</div>
+                    </li>
+                    <div class="ending">已加载全部影城</div>
+                </ul>
+            </div>
+            <Tabbar></Tabbar>
         </div>
-        <div class="area_search" ref="myarea">
-            <ul v-if="!isShow">
-                <li class="area_detail" v-for="data in datalist"  @touchmove.prevent @mousewheel.prevent @click="citydetail(data)" :key="data">
-                    <div>
-                        {{data}}
-                    </div>
-                </li>
-            </ul>
-        </div>
-        <div class="cinema_list">
-            <Loading v-if="isLoading"/>
-            <ul v-else>
-                <li v-for="data in areaFilter" 
-                @click="handlecinema(data.name)" 
-                :key="data.cinemaId">
-                    <div class="cinema_detail">
-                        <p>{{data.name}}</p>
-                        <span>{{data.address}}</span>
-                    </div>
-                    <div class="price">{{data.lowPrice|pricefilter}}元起</div>
-                </li>
-                <div class="ending">已加载全部影城</div>
-            </ul>
-        </div>
-        <Tabbar></Tabbar>
     </div>
 </template>
 
@@ -86,6 +88,7 @@ export default {
             arealist:[],
             cityid:"",
             price:[],
+            curtainShow:true
         }
     },
     mounted(){
@@ -93,7 +96,7 @@ export default {
         if(area){
             this.arealist = JSON.parse(area)
         }
-        console.log("123456",document.querySelectorAll('ul')
+        console.log("123456",document.querySelectorAll('div')
         )
         this.cityname = localStorage.getItem("cityname")
 
@@ -132,33 +135,50 @@ export default {
             console.log("aaaaa",this.datalist);
         },
         handlecity(){
+            
             this.isShow = !this.isShow  
-            this.isColor = !this.isColor
-            if(this.isColor){
-                return document.querySelectorAll('div')[7].style.color = "black"
+            this.isColor = !this.isColor  
+            if (this.isShow) {
+                document.querySelectorAll('div')[2].style.backgroundColor = null
+                document.querySelectorAll('div')[3].style.position = null
             }else{
-                return document.querySelectorAll('div')[7].style.color = "red"
-            }
+                document.querySelectorAll('div')[2].style.backgroundColor = 'rgb(131, 128, 128,0.5)'
+                document.querySelectorAll('div')[3].style.position = 'fixed'
+            }          
+            if(this.isColor){
+                return document.querySelectorAll('div')[8].style.color = "black"                
+            }else{
+                return document.querySelectorAll('div')[8].style.color = "red"                
+            };
+            
             var top = document.querySelectorAll('div')[0].offsetTop
             top - this.$refs.myarea.offsetTop
         },
         citydetail(data){
+            document.querySelectorAll('div')[3].style.position = null
             // console.log("123123",data);
+            
             this.city = data
             this.isColor = !this.isColor
             this.isShow = !this.isShow  
+            document.querySelectorAll('div')[2].style.backgroundColor = null
             if(this.isColor){
-                return document.querySelectorAll('div')[7].style.color = "black"
+                return document.querySelectorAll('div')[8].style.color = "black"
             }else{
-                return document.querySelectorAll('div')[7].style.color = "red"
+                return document.querySelectorAll('div')[8].style.color = "red"
             }
             document.querySelectorAll('ul')[0].style.display = "none"
             
         },
-        // handlecinema(name){
-        //     console.log("cinema",name);
-        //     this.$store.commit("CINEMA_STATE",name)
-        // }
+        mobile(){
+            document.body.addEventListener('touchmove',function(e){
+                window.event.returnValue = true
+            })
+        },
+        handlecinema(name){
+            console.log("cinema",name);
+            this.$store.commit("CINEMA_STATE",name)
+        }
     },
     computed:{
         areaFilter(){
@@ -177,7 +197,7 @@ export default {
 </script>
 
 <style scoped>
-    .main_cinema{}
+    .main_cinema .curtain{height: 100%;;z-index: 100;}
     .cinema_header{width: 100%;height: 107px;}
     .cinema_title{display: flex;padding:0 30px 0 20px;align-items: center;text-align: center;}
     .cinema_title .cinema_city span{font-size: 13px;}
@@ -188,14 +208,14 @@ export default {
         background-color: white;
         display: flex;align-items: center;text-align: center;width: 100%;height: 45px;border: 1px solid rgba(223, 217, 217, 0.925);font-size: 13px;}
     .cinema_menu .cinema_area{color:black}
-    .area_search{width: 100%;padding-left:5px;margin-top: 10px;background-color: white;}
-    .area_search ul{display: flex;flex-wrap:wrap;}
+    .area_search{width: 100%;padding-left:5px;margin-top: -10px;background-color: white;}
+    .area_search ul{display: flex;flex-wrap:wrap;padding-top:10px}
     .area_search ul .area_detail{height:39px;width: 24.9%;text-align: start;}
     .area_search{position: fixed;top: 107px;}
     .area_search .area_detail div{border: 1px solid rgb(243, 239, 239);width: 90%;text-align: center;font-size: 13px;}
-    .cinema_list{overflow: hidden;}
+    .cinema_list{height: 100%}
     .cinema_list ul{margin-bottom:46px}
-    .cinema_list ul li{overflow: hidden;padding:10px;border-bottom: 1px solid rgba(252, 248, 248, 0.966);}
+    .cinema_list ul li{overflow: hidden;padding:10px;}
     .cinema_list ul li .cinema_detail{white-space: nowrap;width: 70%;float: left;text-overflow: ellipsis;width: 70%;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;}
     .cinema_list ul li .cinema_detail p{font-size: 15px;white-space: ;}   
     .cinema_list ul li .cinema_detail span{font-size: 10px;color: grey;}         

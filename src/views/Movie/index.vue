@@ -77,7 +77,7 @@ export default {
 </script>
 
 <style scoped>
-#movie .city{position: absolute; background-color: rgba(169, 169, 169, 0.5);border-radius: 25px; min-width: 50px;height: 25px; text-align: center;line-height: 25px;padding: 2px;}
+#movie .city{position: absolute; background-color: rgba(169, 169, 169, 0.5);border-radius: 25px; min-width: 50px;height: 25px; text-align: center;line-height: 25px;padding: 2px;margin-top: 10px;margin-left:10px}
 #movie_menu div:hover{cursor: pointer;}
 .myactive{color: red;}
 #movie #content{}

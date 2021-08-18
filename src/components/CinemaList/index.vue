@@ -1,6 +1,6 @@
 <template>
     <div>
-        <Loading v-if="isLoading"/>
+        <Loading v-if="this.isLoading"/>
         <ul v-else>
             <li v-for="data in arealist">
                 <div class="cinema_detail">
