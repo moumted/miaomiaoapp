@@ -5,6 +5,8 @@ import Mine from './Mine'
 import Movie from './Movie'
 import CinemaSearch from './CinemaSearch'
 import Detail from './Detail'
+import Admin from './Admin'
+import admincenter from '@/views/Admin/center'
 import City from '@/components/City'
 Vue.use(VueRouter)
 const auth = {
@@ -16,15 +18,40 @@ const auth = {
 }
 const router = new VueRouter({
   mode: 'history',
-  base: process.env.BASE_URL,
+  // base: process.env.BASE_URL,
+  base:'quanmin',
   routes:[
     {
       path:'/city',
       component:City
     },
+    {
+      path:'/admincenter',
+      component : admincenter,
+      children : [
+        {
+            path : 'user',
+            component :() =>import('@/views/Admin/user.vue')
+        },
+        {
+            path : 'movie',
+            component :()=>import('@/views/Admin/movie.vue')
+        },
+        {
+            path :'cinema',
+            component :()=>import('@/views/Admin/cinema.vue')
+        },
+        {
+            path : '/admincenter',
+            redirect : '/admincenter/user'
+        }
+
+      ]
+    },
     Detail,
     CinemaSearch,
     Cinema,
+    Admin,
     Mine,
     Movie,
     

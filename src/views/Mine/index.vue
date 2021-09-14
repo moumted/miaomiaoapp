@@ -1,7 +1,6 @@
 <template>
-    <div>
-           <Header title="我的全民"></Header>
-           <Login></Login>
+    <div>           
+           <router-view></router-view>
            <Tabbar></Tabbar>
     </div>
 </template>
