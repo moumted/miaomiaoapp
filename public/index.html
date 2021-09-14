@@ -11,12 +11,23 @@
     <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=bdmE8lPx8efEX1mqT5i9MIqhpUTnijYs"></script>
     <link rel="stylesheet" href="@/components/Swiper/swiper-bundle.min.css">
     <script src="@/components/Swiper/swiper-bundle.min.js"></script>
+    <script type="text/javascript" src="../node_modules/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="../node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../node_modules/bootstrap/dist/js/bootstrap.js"></script>
+
   </head>
   <body>
     <noscript>
       <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
     </noscript>
-    <div id="app"></div>
+    <style>
+      body,html{height: 100%;;width: 100%;}
+      #app{display: flex;height: 100%;}
+      #app div{margin: auto;}
+    </style>
+    <div id="app">
+      <div>全民影院正在加载中.....</div>
+    </div>
     <!-- built files will be auto injected -->
   </body>
 </html>

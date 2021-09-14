@@ -1,10 +1,10 @@
 <template>
     <div>
         <div class="swiper-container photosswiper">
+            <div class="swiper-pagination"></div>
             <div class="swiper-wrapper">
                 <slot></slot>
             </div>
-            <div class="swiper-pagination"></div>
         </div>
     </div>
 </template>
@@ -16,6 +16,10 @@ export default {
     name:'Swiperphotos',
     mounted(){
          new Swiper ('.photosswiper', {
+             pagination: {
+             el: '.swiper-pagination',
+             type: 'fraction',
+             },
             // direction: 'vertical', // 垂直切换选项
             // loop: true, // 循环模式选项
             
@@ -25,16 +29,12 @@ export default {
         //    spaceBetween : 20,
            
             // 如果需要分页器
-            pagination: {
-            el: '.swiper-pagination',
-            type: 'fraction',
-            },
         })        
     }
 }
 </script>
 
 <style lang="scss">
-.swiper-wrapper{height: 100%;display: flex;align-items: center;}
+.swiper-wrapper{}
 .swiper-pagination{color: white;}
 </style>

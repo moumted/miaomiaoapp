@@ -35,13 +35,15 @@
                 <span @click="goback">&lt</span>
                 <span>剧照<p v-if="datalist.photos.length">({{datalist.photos.length}})</p> </span>
             </div>
-            <ul>
-                <Swiperphotos>
-                    <li class="swiper-slide" v-for="data in datalist.photos">
-                        <img :src="data" alt="">
-                    </li>
-                </Swiperphotos>
-            </ul>
+            <div class="photos">
+                <ul>
+                    <Swiperphotos>
+                        <li class="swiper-slide" v-for="data in datalist.photos">
+                            <img :src="data" alt="">
+                        </li>
+                    </Swiperphotos>
+                </ul>
+            </div>
         </div>
         </transition>
     </div>
@@ -148,8 +150,10 @@ div{
         }
 
     };
-    .film_detail_photos{overflow-y: hidden;
-        height: 100vh;position: relative;
+    .film_detail_photos{
+        width: 100%;
+        height: 100vh;
+       
         background-color: black;
         .photos_all{
             color: white;
@@ -162,13 +166,18 @@ div{
             text-align: center;
             padding:10px 5px 0 5px
             };
-        ul{
-            
-            li{
-                width: 100%;
-                img{
-                    width: 100%;     
-                    height: auto;       
+        .photos{
+            width: 100%;
+            display: flex;align-items: center;
+            ul{
+                
+                li{
+                                         
+                    img{   
+                        transform-origin: center center;
+                          width: 100%;
+                             
+                    }
                 }
             }
         }
