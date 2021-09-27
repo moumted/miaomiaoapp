@@ -3,7 +3,7 @@
         <div id="header">
 			<div class="header_title">
 				<span id="">
-					<img src="@/assets/maizuo.png" style="width: 35px;height: 35px;">
+					<img src="@/assets/logo.png" style="width: 35px;height: 35px;">
 				</span>
 				<h1>{{title}}</h1>
 			</div>
